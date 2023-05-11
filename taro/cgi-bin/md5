@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+import hashlib
+
+
+def md5_hex(x):
+    return hashlib.md5(x.encode('utf-8')).hexdigest()
+
+
+def md5_hex_upper(x):
+    return md5_hex(x).upper()
+
+
+def md5_u64(x):
+    digest = hashlib.md5(x.encode('utf-8')).digest()
+    return str(int.from_bytes(digest[:8], 'little'))
+
+
+@cgi_entry_plain
+def process(inputs, output_type='', **req):
+    if output_type == 'hex':
+        return map(md5_hex, inputs)
+    elif output_type == 'hex_upper':
+        return map(md5_hex_upper, inputs)
+    elif output_type == 'u64':
+        return map(md5_u64, inputs)
+    else:
+        raise Exception('invalid output_type')
+
+
+if __name__ == '__main__':
+    process()

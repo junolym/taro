@@ -1,0 +1,10 @@
+title = "去重计数"
+desc = "去重计数，输出不重复的行，及对应的出现次数，按次数降序排列"
+
+[[options]]
+key = "filter"
+title = "过滤（仅输出指定次数的行）"
+default = 0
+
+[[example]]
+url = "#?filter=0&input=a%0Ab%0Ab%0Ac%0Ac%0Ac"

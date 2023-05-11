@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+
+
+@cgi_entry_plain
+def process(input_str, inputs, begin=1, end=10, step=1, **req):
+    nums = range(begin, end + step, step)
+    if len(inputs) == len(nums):
+        for i in range(len(nums)):
+            yield inputs[i] % nums[i]
+    else:
+        for x in nums:
+            yield input_str % x
+
+
+if __name__ == '__main__':
+    process()

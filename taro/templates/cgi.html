@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <style>
+        textarea {
+            font-family: Monaco, Menlo, 'Courier New', monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-md">
+        <br>
+        <div class="mb-3">{{ title }}{% if desc %} - {{ desc }}{% endif %}</div>
+        {% if extraDesc %}
+        <div class="mb-3">{{ extraDesc|join('<br>')|safe }}</div>
+        {% endif %}
+        {% if options %}
+        <div class="mb-3 d-flex flex-wrap" id="optionsArea">
+            {% for option in options %}
+            {% if option.key %}
+            <div class="col-md-3 me-3 option">
+                <label class="form-label">{{ option.title or option.key }}</label>
+                {% if option.list %}
+                <select class="form-select option-input" name="{{ option.key }}">
+                    {% for item in option.list %}
+                    <option value="{{ item.value }}">{{ item.title or item.value }}</option>
+                    {% endfor %}
+                </select>
+                {% else %}
+                <input type="{{ 'number' if option.default is number else 'text' }}" name="{{ option.key }}"
+                    class="form-control option-input" placeholder="" required=""
+                    value="{{ option.default.encode('unicode_escape').decode('utf-8') if option.default is string else option.default }}">
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="mb-3{{ '' if args else ' d-none'  }}" id="argsArea">
+            <label for="argsTextArea" class="form-label">{{ args_desc or '参数' }}</label>
+            <input id="argsTextArea" type="text" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="inputTextArea" class="form-label">{{ input or '输入' }}</label>
+            <textarea class="form-control" id="inputTextArea" rows="10">{{ default_input }}</textarea>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-sm btn-outline-primary" id="submitButton">提交</button>
+            <input type="file" class="d-none" id="files" />
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="importButton">导入文件</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="saveButton" disabled>下载输出</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="copyButton" disabled>复制输出</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="copyLinkButton">复制链接</button>
+            <button type="button" class="btn btn-sm btn-outline-light" id="showMoreButton">...</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary d-none" id="showArgsButton">显示参数</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary d-none" id="copyExampleButton">复制作为示例</button>
+            <span id="status"></span>
+        </div>
+        <div class="mb-3">
+            <label for="outputTextArea" class="form-label">{{ output or '输出' }}</label>
+            <textarea class="form-control" id="outputTextArea" rows="10" readonly></textarea>
+        </div>
+        {% if example %}
+        <div class="mb-3" id="exampleArea">
+            {% for i in range(example|length) %}
+            <a href="{{ example[i].url }}" class="me-3">示例 {{ i + 1 }}{% if example[i].title %}（{{ example[i].title
+                }}）{% endif %}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"
+        integrity="sha256-xoh0y6ov0WULfXcLMoaA6nZfszdgI8w2CEJ/3k8NBIE=" crossorigin="anonymous"></script>
+    <script>
+        function setOutput(output, isError = false) {
+            window.output = output
+            $('#outputTextArea').val(output)
+            if (output.length && !isError) {
+                $('#saveButton').removeAttr('disabled')
+                $('#copyButton').removeAttr('disabled')
+            } else {
+                $('#saveButton').prop('disabled', true)
+                $('#copyButton').prop('disabled', true)
+            }
+        }
+
+        function getArgs() {
+            let args = {}
+            try {
+                args = JSON.parse($('#argsTextArea').val())
+            } catch (error) {
+                args = null
+                $('#status').html('参数解析失败')
+                setOutput(error.toString(), true)
+                $('#argsTextArea').focus()
+            }
+            return args
+        }
+
+        function setArgs(args) {
+            $('#argsTextArea').val(JSON.stringify(args, null, 1).replaceAll(/\n */g, ' '))
+        }
+
+        function fillArgsByOption(args, name = undefined) {
+            for (const option of $('#optionsArea .option')) {
+                const input = option.children[1]
+                if (name && name != input.name) {
+                    continue
+                }
+                if (input.type === 'number') {
+                    args[input.name] = +input.value
+                } else {
+                    args[input.name] = JSON.parse('"' + input.value.replace(/\"/g, '\\"') + '"')
+                }
+            }
+            return args
+        }
+
+        function stringifyArgs(args) {
+            let params = []
+            if ($('#argsArea').hasClass('d-none')) {
+                for (const key of Object.keys(args)) {
+                    params.push(key + '=' + encodeURIComponent(JSON.stringify('' + args[key]).slice(1, -1).replace(/\\"/g, '"')))
+                }
+            } else {
+                params.push('args=' + encodeURIComponent(JSON.stringify(args)))
+            }
+            if ($('#inputTextArea').val().length) {
+                const input = $('#inputTextArea').val().split('\n').slice(0, 20).join('\n')
+                params.push('input=' + encodeURIComponent(input))
+            }
+            return params.length ? '#?' + params.join('&') : ''
+        }
+
+        function parseHash() {
+            {% if args %}
+            let args = args
+            {% else %}
+            let args = {}
+            {% endif %}
+            args = fillArgsByOption(args)
+            const hashParams = new URLSearchParams(window.location.hash.substr(1))
+            for (const [key, value] of hashParams) {
+                if (key === 'input') {
+                    window.input = value
+                    $('#inputTextArea').val(value)
+                    continue
+                }
+                if (key === 'args') {
+                    try {
+                        args = JSON.parse(value)
+                        for (const option of $('#optionsArea .option')) {
+                            const input = option.children[1]
+                            if (input.name in args) {
+                                input.value = '' + args[input.name]
+                            }
+                        }
+                    } catch (e) { }
+                    $('#argsArea').removeClass('d-none')
+                    continue
+                }
+                for (const option of $('#optionsArea .option')) {
+                    const input = option.children[1]
+                    if (input.name === key) {
+                        input.value = value
+                        args = fillArgsByOption(args, key)
+                    }
+                }
+            }
+
+            setArgs(args)
+            if ($('#inputTextArea').val().length) {
+                $('#submitButton').click()
+            }
+        }
+
+        $(() => {
+            window.input = $('#inputTextArea').val()
+            window.output = ''
+            parseHash()
+        })
+
+        $(window).on('hashchange', parseHash)
+
+        $('#optionsArea .option-input').change((event) => {
+            let args = getArgs()
+            try {
+                args = fillArgsByOption(args, event.target.name)
+            } catch (e) {
+                args[event.target.name] = null
+            }
+            setArgs(args)
+        })
+
+        $('#inputTextArea').change(() => {
+            window.input = $('#inputTextArea').val()
+        })
+
+        $('#submitButton').click(() => {
+            setOutput('')
+            const args = getArgs()
+            if (args === null) {
+                return
+            }
+            const req = {
+                input: window.input,
+                ...args
+            }
+            $('#submitButton').prop('disabled', true)
+            $('#status').html('运行中...')
+            $.ajax({
+                url: '/cgi-bin/{{ path }}',
+                type: 'POST',
+                data: JSON.stringify(req),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8'
+            }).done((resp) => {
+                $('#submitButton').removeAttr('disabled')
+                if (resp.error) {
+                    $('#status').html('运行失败')
+                    setOutput(resp.error, true)
+                } else {
+                    $('#status').html('运行成功')
+                    setOutput(resp.output)
+                }
+            }).fail((data) => {
+                $('#submitButton').removeAttr('disabled')
+                $('#status').html('运行失败: ' + data.status)
+            })
+        })
+
+        $('#saveButton').click(() => {
+            saveAs(new Blob([String.fromCharCode(0xFEFF), window.output], { type: "text/plain;charset=utf-8" }), '{{ output_file or cgi + ".txt" }}')
+            $('#status').html('')
+            $('#outputTextArea').focus()
+        })
+
+        $("#importButton").click(() => {
+            $('#status').html('选择文件...')
+            $("#files").click()
+        })
+
+        $('#files').change(() => {
+            $('#status').html('导入中...')
+            const reader = new FileReader()
+            reader.readAsText($("#files")[0].files[0], 'utf-8')
+            reader.onload = () => {
+                window.input = reader.result
+                $('#inputTextArea').val(reader.result)
+                $('#inputTextArea').focus()
+                $('#status').html('导入成功')
+                $('#files').val('')
+            }
+        })
+
+        $("#copyButton").click(() => {
+            $("#outputTextArea").select()
+            const succ = document.execCommand('Copy')
+            $('#status').html('复制' + (succ ? '成功' : '失败'))
+        })
+
+        $("#copyLinkButton").click(() => {
+            const args = getArgs()
+            if (args === null) {
+                return
+            }
+            const url = window.location.origin + window.location.pathname + stringifyArgs(args)
+            navigator.clipboard.writeText(url).then((err) => {
+                $('#status').html('复制' + (!err ? '成功' : '失败'))
+            })
+        })
+
+        $('#showMoreButton').click(() => {
+            $('#showMoreButton').addClass('d-none')
+            $('#showArgsButton').removeClass('d-none')
+            $('#copyExampleButton').removeClass('d-none')
+        })
+
+        $('#showArgsButton').click(() => {
+            $('#argsArea').removeClass('d-none')
+        })
+
+        $("#copyExampleButton").click(() => {
+            const args = getArgs()
+            if (args === null) {
+                return
+            }
+            const url = stringifyArgs(args)
+            const example = `\n[[example]]\nurl = "${url}"\n`
+            navigator.clipboard.writeText(example).then((err) => {
+                $('#status').html('复制' + (!err ? '成功' : '失败'))
+            })
+        })
+
+        $('#exampleArea a').click((e) => {
+            location.replace(e.target.href)
+        })
+
+    </script>
+</body>
+
+</html>

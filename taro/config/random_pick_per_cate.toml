@@ -1,0 +1,10 @@
+title = "分类随机采样"
+desc = "每个类目随机抽取若干行（每行第一列表示类目），抽取数量为参数num"
+
+[[options]]
+key = "num"
+title = "采样个数"
+default = 3
+
+[[example]]
+url = "#?num=3&input=a%091%0Aa%092%0Aa%093%0Aa%094%0Aa%095%0Aa%096%0Ab%091%0Ab%092"

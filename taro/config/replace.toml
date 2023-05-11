@@ -1,0 +1,19 @@
+title = "文本替换"
+
+[[options]]
+key = "from"
+title = "源字符串"
+default = ""
+
+[[options]]
+key = "to"
+title = "替换字符串"
+default = ""
+
+[[example]]
+title = "LF转CRLF"
+url = "#?from=%5Cn&to=%5Cr%5Cn"
+
+[[example]]
+title = "CRLF转LF"
+url = "#?from=%5Cr%5Cn&to=%5Cn"

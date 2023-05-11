@@ -1,0 +1,4 @@
+title = "按首列拆分"
+
+[[example]]
+url = "#?input=1%09a%09b%09c%0A2%09d%09e%09f"

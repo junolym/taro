@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+import base64
+
+
+def encode(x, output_type='normal', **req):
+    ret = base64.b64encode(x.encode('utf-8')).decode('ascii')
+    if output_type == 'url':
+        ret = ret.replace('+', '-').replace('/', '_').replace('=', '')
+    return ret
+
+
+@cgi_entry_plain
+def process(input_str, inputs, mode='line', **req):
+    if mode == 'all':
+        yield encode(input_str, **req)
+    elif mode == 'all_with_CRLF':
+        yield encode('\r\n'.join(inputs), **req)
+    elif mode == 'line':
+        for x in inputs:
+            yield encode(x, **req)
+
+
+if __name__ == '__main__':
+    process()

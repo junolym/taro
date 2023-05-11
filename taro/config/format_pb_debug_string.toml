@@ -1,0 +1,15 @@
+title = "pb debug string 格式化"
+desc = "ShortDebugString输出不带换行和缩进，且中文无法显示，这个工具可以格式化成类似Utf8DebugString的效果。"
+
+[[options]]
+key = "encoding"
+title = "编码"
+default = "utf-8"
+
+[[options]]
+key = "indent"
+title = "缩进"
+default = 4
+
+[[example]]
+url = "#?encoding=utf-8&indent=4&input=item%20%7B%20k1%3A%200%20k2%3A%20%22str%22%20k3%3A%20%22%5C345%5C245%5C275%22%20%7D"

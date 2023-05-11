@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+
+
+@cgi_entry_plain
+def process(inputs, input_type='line', template='{}', **req):
+    for x in inputs:
+        if input_type == 'line':
+            yield template.format(x)
+        elif input_type == 'with_split':
+            yield template.format(*x.split())
+
+
+if __name__ == '__main__':
+    process()

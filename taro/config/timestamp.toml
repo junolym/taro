@@ -1,0 +1,10 @@
+title = "时间戳转换"
+desc = "自动跳过非时间戳的列"
+
+[[options]]
+key = "sep"
+title = "分隔符"
+default = "\t"
+
+[[example]]
+url = "#?input=xxx%091661234567"

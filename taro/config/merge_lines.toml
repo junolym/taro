@@ -1,0 +1,4 @@
+title = "按首列合并"
+
+[[example]]
+url = "#?input=1%09a%0A1%09b%0A1%09c%0A2%09d%0A2%09e%0A2%09f"

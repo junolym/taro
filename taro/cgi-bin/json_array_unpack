@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+import json
+
+
+@cgi_entry_plain
+def process(inputs, **req):
+    data = json.loads(''.join(inputs))
+    for x in data:
+        yield json.dumps(x, ensure_ascii=False)
+
+
+if __name__ == '__main__':
+    process()

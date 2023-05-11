@@ -1,0 +1,7 @@
+title = "bytes转string"
+desc = "支持形如 [65,97] 的字节数组，或 \\345\\245\\275 \\xe5\\xa5\\xbd \\u597D å¥½ 之类的"
+
+[[options]]
+key = "encoding"
+title = "编码"
+default = "utf-8"

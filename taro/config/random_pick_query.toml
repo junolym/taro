@@ -1,0 +1,11 @@
+title = "query随机采样"
+desc = "以qv为权重，随机采样query，生成个数为参数num"
+input = "输入（每行一个query和qv）"
+
+[[options]]
+key = "num"
+title = "输出个数"
+default = 100
+
+[[example]]
+url = "#?num=100&input=apple%091000%0Abanana%092000"

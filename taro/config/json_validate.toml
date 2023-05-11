@@ -1,0 +1,2 @@
+title = "json格式校验"
+desc = "批量检查json格式（每行一个json），输出有问题的json的行号，没问题输出passed"

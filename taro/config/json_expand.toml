@@ -1,0 +1,21 @@
+title = "json展开"
+desc = "把json出现的数组展开，嵌套结构拍平"
+
+[[options]]
+key = "output_type"
+title = "输出格式"
+
+[[options.list]]
+title = "表格（tab分割）"
+value = "table"
+
+[[options.list]]
+title = "csv（逗号分隔）"
+value = "csv"
+
+[[options.list]]
+title = "每行一个json"
+value = "json"
+
+[[example]]
+url = "#?output_type=table&input=%7B%22a%22%3A1%2C%22b%22%3A%5B2%2C3%5D%2C%20%22c%22%3A%20%7B%22d%22%3A%204%7D%7D"

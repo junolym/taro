@@ -1,0 +1,15 @@
+title = "拆分重组"
+desc = "按【分隔符】拆分每一行，再用【拼接符】重新组成一行"
+
+[[options]]
+key = "sep"
+title = "分隔符（空表示任意多个空格）"
+default = ""
+
+[[options]]
+key = "delimiter"
+title = "拼接符"
+default = "\t"
+
+[[example]]
+url = "#?sep=&delimiter=\t&input=1%202%20%20%203%20%09%204"

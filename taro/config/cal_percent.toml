@@ -1,0 +1,14 @@
+title = "计算百分比"
+
+[[options]]
+key = "column"
+title = "要计算的列"
+default = 2
+
+[[options]]
+key = "sep"
+title = "分隔符"
+default = "\t"
+
+[[example]]
+url = "#?column=2&sep=%5Ct&input=apple%09100%0Abanana%09250"

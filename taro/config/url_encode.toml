@@ -1,0 +1,17 @@
+title = "url编码"
+
+[[options]]
+key = "mode"
+title = "模式"
+
+[[options.list]]
+title = "每行独立编码"
+value = "line"
+
+[[options.list]]
+title = "整个文本编码"
+value = "all"
+
+[[options]]
+key = "safe"
+title = "跳过编码的字符"

@@ -1,0 +1,25 @@
+title = ""
+desc = ""
+output_file = ""
+args = ""
+args_desc = ""
+input = ""
+output = ""
+
+[[options]]
+key = ""
+title = ""
+default = 0
+
+[[options]]
+key = ""
+title = ""
+default = ""
+
+[[options]]
+key = ""
+title = ""
+
+[[options.list]]
+title = ""
+value = ""

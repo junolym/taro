@@ -1,0 +1,7 @@
+version: "3"
+services:
+  taro:
+    build: .
+    ports:
+      - 3000:80
+

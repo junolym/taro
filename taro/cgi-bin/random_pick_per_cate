@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+import random
+
+
+@cgi_entry_plain
+def process(inputs, num, **req):
+    pool = {}
+    for line in inputs:
+        try:
+            l = line.split()
+            pool[l[0]] = pool.get(l[0], [])
+            pool[l[0]].append(line)
+        except:
+            pass
+
+    for k in pool:
+        n = num if len(pool[k]) > num else len(pool[k])
+        for x in random.sample(pool[k], n):
+            yield x
+
+
+if __name__ == '__main__':
+    process()

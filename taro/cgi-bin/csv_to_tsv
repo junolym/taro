@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+import io
+import csv
+
+
+@cgi_entry_plain
+def process(inputs, **req):
+    outputs = io.StringIO()
+    csv.writer(outputs, delimiter='\t', quotechar='\t', quoting=csv.QUOTE_NONE).writerows(
+        csv.reader([x.replace('\t', '  ') for x in inputs]))
+    return outputs
+
+
+if __name__ == '__main__':
+    process()

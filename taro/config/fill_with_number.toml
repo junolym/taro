@@ -1,0 +1,21 @@
+title = "填充数字"
+desc = "输入为模板，用 %d %03d 之类的格式代表数字。当输入行数和数字个数相等时，每行作为一个模板。"
+default_input = "%d"
+
+[[options]]
+key = "begin"
+title = "起始数字"
+default = 1
+
+[[options]]
+key = "end"
+title = "结束数字"
+default = 10
+
+[[options]]
+key = "step"
+title = "步进"
+default = 1
+
+[[example]]
+url = "#?begin=1&end=10&step=1&input=cat-%2503d.jpg"

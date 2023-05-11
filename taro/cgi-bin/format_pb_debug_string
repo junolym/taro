@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+
+
+@cgi_entry_plain
+def process(input_str, encoding='utf-8', indent=4, **req):
+    x = ''
+    indent_level = 0
+    in_string = False
+
+    for i in range(len(input_str)):
+        if input_str[i] == '"' and i > 0 and input_str[i - 1] != '\\':
+            in_string = not in_string
+        elif input_str[i] == ' ' and not in_string and i > 0 and i + 1 < len(input_str):
+            if input_str[i - 1] == '{':
+                indent_level += 1
+            if input_str[i + 1] == '}':
+                indent_level -= 1
+            if input_str[i - 1] != ':' and input_str[i + 1] != '{':
+                x += '\n' + ' ' * indent * indent_level
+                continue
+        x += input_str[i]
+
+    if len(encoding):
+        x = (
+            x.encode('raw_unicode_escape')
+            .decode('unicode_escape')
+            .encode('raw_unicode_escape')
+            .decode(encoding)
+            .encode('raw_unicode_escape')
+            .decode('unicode_escape')
+        )
+
+    return x
+
+
+if __name__ == '__main__':
+    process()

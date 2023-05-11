@@ -1,0 +1,23 @@
+title = "字符串格式化"
+desc = "利用python的format函数格式化字符串"
+input = "输入（每一行为填充模板的内容）"
+
+[[options]]
+key = "template"
+title = "模板（用{0}、{1}等表示参数的占位符）"
+default = "{0}"
+
+[[options]]
+key = "input_type"
+title = "输入类型"
+
+[[options.list]]
+title = "split后作为参数"
+value = "with_split"
+
+[[options.list]]
+title = "整行作为参数"
+value = "line"
+
+[[example]]
+url = "#?template=%7B0%7D%20-%20%7B1%7D&input_type=with_split&input=a%201%0Ab%202%0Ac%203%0Ad%204"

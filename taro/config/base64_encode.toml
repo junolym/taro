@@ -1,0 +1,30 @@
+title = "base64编码"
+input = "输入（待编码文本）"
+
+[[options]]
+key = "mode"
+title = "模式"
+
+[[options.list]]
+title = "每行独立编码"
+value = "line"
+
+[[options.list]]
+title = "整个文本编码"
+value = "all"
+
+[[options.list]]
+title = "整个文本编码，以CRLF换行"
+value = "all_with_CRLF"
+
+[[options]]
+key = "output_type"
+title = "输出类型"
+
+[[options.list]]
+title = "正常"
+value = "normal"
+
+[[options.list]]
+title = "url版本"
+value = "url"

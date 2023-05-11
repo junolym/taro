@@ -1,0 +1,15 @@
+title = "多行合并"
+desc = "多行合并成一行"
+
+[[options]]
+key = "delimiter"
+title = "分隔符"
+default = "\t"
+
+[[options]]
+key = "num"
+title = "合并的行数"
+default = 3
+
+[[example]]
+url = "#?delimiter=%5Ct&num=3&input=1%0A2%0A3%0A4%0A5%0A6%0A7%0A8"

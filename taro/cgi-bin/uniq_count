@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+
+
+@cgi_entry_plain
+def process(inputs, filter=0, **req):
+    s = {}
+    for x in inputs:
+        if len(x) == 0:
+            continue
+        s[x] = s.get(x, 0)
+        s[x] = s[x] + 1
+    l = [x for x in s.keys()]
+    l.sort(key=lambda x: s[x], reverse=True)
+    for x in l:
+        if filter:
+            if filter != s[x]:
+                continue
+            yield x
+        else:
+            yield f'{x}\t{s[x]}'
+
+
+if __name__ == '__main__':
+    process()

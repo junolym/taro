@@ -1,0 +1,2 @@
+title = "csv转tsv"
+desc = "csv（逗号分割）转tsv（tab分割），tab分割可直接粘贴到表格"

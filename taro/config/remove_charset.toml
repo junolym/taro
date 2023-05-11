@@ -1,0 +1,14 @@
+title = "文本删除字符"
+desc = "文本删除字符"
+
+[[options]]
+key = "charset"
+title = "字符集"
+default = ""
+
+[[example]]
+url = "#?charset=%7B%7D%2C%3A%22&input=%7B%22code%22%3A%20110000%2C%20%22name%22%3A%20%22%E5%8C%97%E4%BA%AC%22%7D%0A%7B%22code%22%3A%20120000%2C%20%22name%22%3A%20%22%E5%A4%A9%E6%B4%A5%22%7D"
+
+[[example]]
+title = "去除\\r"
+url = "#?charset=%5Cr&input="

@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import cgi_entry_plain
+
+import json
+import re
+
+
+@cgi_entry_plain
+def process(input_str, encoding='utf-8', **req):
+    # [65, 97] -> Aa
+    if re.match(r'^\s*\[[0-9,\s]+\]\s*$', input_str):
+        return bytes(json.loads(input_str)).decode(encoding, errors='replace')
+
+    # \u597D -> 好
+    # \345\245\275 -> 好
+    # \xe5\xa5\xbd -> 好
+    return input_str.encode('raw_unicode_escape').decode('unicode_escape').encode('raw_unicode_escape').decode(encoding).encode('raw_unicode_escape').decode('unicode_escape')
+
+
+if __name__ == '__main__':
+    process()

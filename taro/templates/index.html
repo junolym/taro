@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Taro - Simple Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <style>
+        .taro-cgi {
+            width: 12rem;
+            font-size: 0.9rem;
+            -webkit-appearance: none;
+        }
+
+        @media (max-width:512px) {
+            .taro-cgi {
+                width: 10rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-white sticky-top p-3">
+        <div class="justify-content-center row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            <div class="col">
+                <input id="search" type="text" class="form-control" placeholder="Search">
+            </div>
+        </div>
+    </div>
+    <div class="container-md d-flex flex-wrap">
+        {% for cgi in cgi_list %}
+        {% if cgi.cgi != 'lib' and not cgi.cgi.startswith('_') %}
+        <a href="{{ cgi.cgi }}/" type="button" class="taro-cgi btn btn-light text-start flex-grow-1 m-1 p-2 pb-3">
+            <p class="m-2">{{ cgi.title if cgi.title else cgi.cgi }}</p>
+            <p class="m-2 text-muted">{{ cgi.cgi if cgi.title else '&nbsp;'|safe }}</p>
+        </a>
+        {% endif %}
+        {% endfor %}
+        {% for i in range(10) %}
+        <div class="taro-cgi flex-grow-1 m-1 invisible"></div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
+    <script>
+        $(() => {
+            $('#search').val('')
+            window.selected = -1
+            window.count = $('a.taro-cgi').length
+        })
+
+        function forAllValid(callback) {
+            const list = $('a.taro-cgi')
+            for (let i = 0; i < list.length; i++) {
+                if (!list[i].hidden) {
+                    if (callback(list[i]))
+                        break
+                }
+            }
+        }
+
+        function select(next) {
+            selected = next
+            let offset = 0
+            forAllValid((a) => {
+                if (offset++ === selected) {
+                    $(a).addClass('active')
+                } else {
+                    $(a).removeClass('active')
+                }
+            })
+        }
+
+        function move(step) {
+            let next = selected + step
+            if (next >= 0 && next < count) {
+                select(next)
+            }
+        }
+
+        $(document).on('keydown', (e) => {
+            if (e.ctrlKey && e.keyCode === 70) { // ctrl + F
+                $('#search').focus()
+                return false
+            } else if (!e.ctrlKey && (e.keyCode >= 49 && e.keyCode <= 90 || e.keyCode === 8)) { // [0-9A-Z] or backspace
+                $('#search').focus()
+                return true
+            } else if (e.keyCode === 37 || e.keyCode === 38) { // left or up
+                move(-1)
+                return false
+            } else if (e.keyCode === 39 || e.keyCode === 40) { // right or down
+                move(1)
+                return false
+            } else if (e.keyCode === 27) { // esc
+                select(-1)
+            } else if (e.keyCode === 13) { // enter
+                let offset = -1
+                forAllValid((a) => {
+                    if (++offset === selected) {
+                        a.click()
+                        return true
+                    }
+                })
+            }
+        })
+
+        $('a.taro-cgi').click(() => {
+            select(-1)
+        })
+
+        $('#search').on('input', () => {
+            const query = $('#search').val()
+            const list = $('a.taro-cgi')
+            window.count = 0
+            for (let i = 0; i < list.length; i++) {
+                list[i].hidden = !list[i].text.match(query)
+                if (list[i].text.match(query)) {
+                    list[i].hidden = false
+                    window.count++
+                } else {
+                    list[i].hidden = true
+                }
+            }
+            select(query.length ? 0 : -1)
+        })
+
+    </script>
+</body>
+
+</html>

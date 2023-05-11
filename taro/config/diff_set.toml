@@ -1,0 +1,15 @@
+title = "集合比较"
+desc = "计算多个集合的共同或差异元素"
+input = "输入（多个文本集，集合之间用一行“--”隔开）"
+output = "输出（第一列为|分割的集合列表，表示这行文本在哪些集合出现）"
+
+[[options]]
+key = "filter"
+title = "过滤（指定输出的集合，如“1”或“1|2”）"
+
+[[example]]
+url = "#?filter=&input=a%0Ab%0Ac%0Ad%0A--%0Ac%0Ad%0Ae%0Af"
+
+[[example]]
+title = "求交集"
+url = "#?filter=1%7C2&input=a%0Ab%0Ac%0Ad%0A--%0Ac%0Ad%0Ae%0Af"

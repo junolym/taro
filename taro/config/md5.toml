@@ -1,0 +1,17 @@
+title = "md5计算"
+
+[[options]]
+key = "output_type"
+title = "输出类型"
+
+[[options.list]]
+title = "16进制"
+value = "hex"
+
+[[options.list]]
+title = "16进制大写"
+value = "hex_upper"
+
+[[options.list]]
+title = "64位整型"
+value = "u64"

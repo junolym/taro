@@ -1,0 +1,6 @@
+title = "按列求和"
+
+[[options]]
+key = "sep"
+title = "分隔符"
+default = "\t"

@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
+from lib.taro_comm import *
+import pandas as pd
+from pandasql import sqldf
+
+
+@cgi_entry_plain
+def process(input_buf, sql, **req):
+    db = pd.read_csv(input_buf)
+    df = sqldf(sql, locals())
+    return df.to_csv(index=False)
+
+
+if __name__ == '__main__':
+    process()

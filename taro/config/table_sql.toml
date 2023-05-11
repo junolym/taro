@@ -1,0 +1,8 @@
+title = "SQL on Table"
+desc = "对表格运行sql，基于pandasql，使用SQLite语法"
+input = "输入（csv格式）"
+output_file = "table_sql.csv"
+
+[[options]]
+key = "sql"
+default = "select * from db"

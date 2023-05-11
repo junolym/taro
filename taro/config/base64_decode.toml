@@ -1,0 +1,8 @@
+title = "base64解码"
+desc = "自动补=，兼容url版本"
+input = "输入（每行一个base64）"
+
+[[options]]
+key = "encoding"
+title = "编码"
+default = "utf-8"
